@@ -10,6 +10,72 @@ time across all sites.
 import pandas as pd
 import numpy as np
 
+
+def with_logging(func):
+    """"A decorator which adds logging to a function."""
+    def inner(*args, **kwargs):
+        print("Before function call")
+        result = func (*args, **kwargs)
+        print("After function call")
+        return result
+
+@with_logging
+def add_two(n):
+    print("Adding two")
+    return n + 2
+print(add_one(1))
+print(add_two(1))
+
+# def add_one(n):
+    # print("Adding one")
+    # return n + 1
+# def add_two(x):
+    # return add_one(add_one(x))
+
+# using decorators to measure time taken to perform a function
+import time
+
+def profile(func):
+   def inner(*args, **kwargs):
+       start = time.process_time_ns()
+       result = func(*args, **kwargs)
+       stop = time.process_time_ns()
+
+       print("Took {0} seconds".format((stop - start) / 1e9))
+       return result
+
+   return inner
+
+@profile
+def measure_me(n):
+   total = 0
+   for i in range(n):
+       total += i * i
+
+   return total
+
+print(measure_me(1000000))
+
+def data_above_threshold(site_id, data, threshold):
+    return list(map(lambda x: x > threshold, data[site_id]))
+
+    # noinspection PyUnreachableCode
+    def count_above_threshold(a,b):
+        if b:
+            return a +1
+        else:
+            return a
+    above_threshold = map(lambda x: x > threshold, data[site_id])
+    return reduce(count_above_threshold, above_threshold, 0)
+
+# using reduce
+from functools import reduce
+seq = [1, 2, 3, 4, 5]
+def sum(a, b):
+    return a + b
+print(reduce(sum, seq))
+
+
 def data_normalise(data):
     max_array = np.array(np.max(data, axis=0))
     return data / max_array[np.newaxis, :]
