@@ -10,6 +10,20 @@ time across all sites.
 import pandas as pd
 import numpy as np
 
+class Site:
+    def _init_(self, name):
+        self.name = name
+        self.measurements = {}
+
+    def add_measurement(self, measurement_id, data):
+        if measurement_id in self.measurements.keys():
+            self.measurements[measurement_id] = \
+                        pd.concat([self.measurements[measurement_id], data])
+
+        else:
+            self.measurements[measurement_id] = data
+            self.measurements[measurement_id].name = measurement_id
+
 
 def with_logging(func):
     """"A decorator which adds logging to a function."""
@@ -19,12 +33,12 @@ def with_logging(func):
         print("After function call")
         return result
 
-@with_logging
-def add_two(n):
-    print("Adding two")
-    return n + 2
-print(add_one(1))
-print(add_two(1))
+# @with_logging
+# def add_two(n):
+    # print("Adding two")
+    # return n + 2
+# print(add_one(1))
+# print(add_two(1))
 
 # def add_one(n):
     # print("Adding one")
@@ -143,4 +157,5 @@ def daily_min(data):
         :returns: A 2D Pandas data frame with total values of the measurements for each day.
         """
     return data.groupby(data.index.date).min()
+
 
